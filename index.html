@@ -8,30 +8,40 @@
 <style>
 body {
   font-family: sans-serif;
-  padding: 12px;
+  padding: 16px;
   background: #f6faff;
-  padding-bottom: 140px;
+  /* 上にスコアバー、下にモードバーが来るので余白を確保 */
+  padding-top: 170px;
+  padding-bottom: 80px;
   box-sizing: border-box;
+  font-size: 15px;
 }
 
 /* タイトル */
 h1 {
-  font-size: 18px;
-  margin-bottom: 6px;
+  font-size: 20px;
+  margin-bottom: 8px;
 }
 
-/* モード切り替えボタン */
+/* モード切り替えボタン（画面下に固定） */
 .mode-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 6px 8px;
+  background: #e5f0ff;
+  box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.15);
+  box-sizing: border-box;
+  z-index: 210;
   display: flex;
   gap: 6px;
-  margin-bottom: 8px;
-  flex-wrap: wrap;
 }
 .mode-btn {
   flex: 1;
   min-width: 90px;
-  padding: 6px 4px;
-  font-size: 12px;
+  padding: 8px 4px;
+  font-size: 13px;
   border-radius: 6px;
   border: 1px solid #0a84ff;
   background: white;
@@ -44,9 +54,9 @@ h1 {
 
 /* セクションタイトル */
 .section-title {
-  margin-top: 18px;
+  margin-top: 20px;
   font-weight: bold;
-  font-size: 16px;
+  font-size: 17px;
   border-left: 5px solid #0a84ff;
   padding-left: 6px;
 }
@@ -55,22 +65,22 @@ h1 {
 .tech-item {
   background: white;
   margin: 4px 0;
-  padding: 8px;
+  padding: 9px;
   border-radius: 6px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
 }
 .tech-name {
   display: flex;
   flex-direction: column;
 }
 .tech-title {
-  font-size: 13px;
+  font-size: 14px;
 }
 .tech-pt-label {
-  font-size: 10px;
+  font-size: 11px;
   color: #666;
 }
 
@@ -78,69 +88,69 @@ h1 {
 .tech-controls {
   display: flex;
   align-items: center;
-  gap: 12px;
-  min-width: 110px;
+  gap: 14px;
+  min-width: 120px;
   justify-content: flex-end;
 }
 .multilabel,
 .maincheck-label {
-  font-size: 10px;
+  font-size: 12px;
   white-space: nowrap;
 }
 
 /* 予選点枠 */
 .pre-box {
-  margin-top: 15px;
+  margin-top: 18px;
   background: #e6f4ff;
-  padding: 8px;
+  padding: 9px;
   border-radius: 6px;
-  font-size: 13px;
-}
-.pre-input {
-  width: 70px;
-  padding: 3px;
   font-size: 14px;
 }
+.pre-input {
+  width: 80px;
+  padding: 4px;
+  font-size: 16px;
+}
 
-/* 下部固定バー（コンパクト） */
+/* 上部固定バー（点数など） */
 .total-bar {
   position: fixed;
   left: 0;
   right: 0;
-  bottom: 0;
-  padding: 6px 8px;
+  top: 0;
+  padding: 6px 10px;
   background: rgba(240, 240, 240, 0.95);
-  box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
   box-sizing: border-box;
-  z-index: 200;
+  z-index: 220;
   transition: background 0.3s ease;
 }
 
-/* 合計ボックス（小さく） */
+/* 合計ボックス */
 .total-box {
   background: #fff7d1;
-  padding: 6px 8px;
+  padding: 7px 9px;
   border-radius: 6px;
-  font-size: 12px;
-  line-height: 1.2;
+  font-size: 13px;
+  line-height: 1.3;
 }
 .total-main {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: bold;
   margin-top: 4px;
 }
 .total-row {
   display: flex;
   justify-content: space-between;
-  margin-top: 1px;
+  margin-top: 2px;
   gap: 6px;
 }
 
-/* 小型ボタン */
-button {
-  margin-top: 6px;
+/* スコアバー内のボタン */
+.total-bar button {
+  margin-top: 5px;
   width: 100%;
-  padding: 8px;
+  padding: 7px;
   border: none;
   background: #0a84ff;
   color: white;
@@ -148,13 +158,19 @@ button {
   font-size: 14px;
 }
 
+/* 印刷ボタン用 */
+.total-bar button.print-btn {
+  margin-top: 4px;
+  background: #555;
+}
+
 /* 警告 */
 .warning {
   color: red;
   font-weight: bold;
   display: none;
-  font-size: 12px;
-  margin-bottom: 5px;
+  font-size: 13px;
+  margin-bottom: 6px;
 }
 
 /* モード別コンテナ */
@@ -167,14 +183,14 @@ button {
 
 /* 編成リスト */
 .order-box {
-  margin-top: 10px;
+  margin-top: 12px;
   background: #ffffff;
   padding: 8px;
   border-radius: 6px;
   border: 1px solid #ddd;
 }
 .order-box-title {
-  font-size: 12px;
+  font-size: 14px;
   margin-bottom: 4px;
 }
 .order-list {
@@ -186,10 +202,10 @@ button {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 6px;
+  gap: 8px;
   padding: 4px 4px;
   border-bottom: 1px solid #eee;
-  font-size: 12px;
+  font-size: 13px;
 }
 .order-name {
   flex: 1;
@@ -198,34 +214,64 @@ button {
   display: flex;
   gap: 4px;
 }
+
+/* 並べ替えボタン（共通） */
 .order-btn {
-  font-size: 10px;
-  padding: 2px 4px;
+  padding: 3px 6px;
   border-radius: 4px;
   border: 1px solid #999;
   background: #f5f5f5;
+  font-size: 13px;
+}
+
+/* ↑ボタン（左） */
+.order-btn.up-btn {
+  min-width: 28px;
+}
+
+/* ↓ボタン（中央） */
+.order-btn.down-btn {
+  min-width: 28px;
+}
+
+/* 削除ボタン（右端・赤・バツマーク） */
+.order-btn.del-btn {
+  min-width: 28px;
+  border-color: #cc0000;
+  background: #ffdddd;
+  color: #cc0000;
+  font-weight: bold;
 }
 
 /* 予選用技選択リスト */
 .pre-tech-list .tech-item {
-  padding: 6px;
+  padding: 7px;
 }
 .pre-tech-list .maincheck-label {
-  font-size: 11px;
+  font-size: 13px;
 }
 </style>
 </head>
 
 <body>
 
-<h1>ツバメカップ2025 技チェック＆編成</h1>
-<p style="font-size:12px;">30技までの決勝スコア計算／決勝・予選の編成モード／印刷用一覧に対応。</p>
-
-<div class="mode-bar">
-  <button class="mode-btn active" data-mode="score">決勝スコアモード</button>
-  <button class="mode-btn" data-mode="finals">決勝編成モード</button>
-  <button class="mode-btn" data-mode="prelims">予選編成モード</button>
+<!-- 上部固定：点数バー -->
+<div class="total-bar" id="total-bar">
+  <div class="total-box">
+    <div class="total-row"><span>技数：</span><span id="selected-count">0</span></div>
+    <div class="total-row"><span>FMD：</span><span id="fmd-total">0</span></div>
+    <div class="total-row"><span>基礎点：</span><span id="base-total">0</span></div>
+    <div class="total-row"><span>予選：</span><span id="pre-total">0</span></div>
+    <div class="total-main">
+      総合計：<span id="final-total">0</span>
+    </div>
+  </div>
+  <button onclick="resetAll()">リセット</button>
+  <button class="print-btn" onclick="openPrintView()">選択技一覧を印刷</button>
 </div>
+
+<h1>ツバメカップ2025 技チェック＆編成</h1>
+<p style="font-size:14px;">30技までの決勝スコア計算／決勝・予選の編成モード／印刷用一覧に対応。</p>
 
 <p class="warning" id="warn">⚠ 技は30個までしか選べません</p>
 
@@ -242,13 +288,13 @@ button {
 
 <!-- ===== 決勝編成モード ===== -->
 <div id="mode-finals" class="mode-section">
-  <p style="font-size:12px;">
+  <p style="font-size:14px;">
     決勝スコアモードで「使用」にチェックした最大30技を元に、順番を並べ替えるモードです。<br>
     「決勝技を読み込む」を押すと現在の選択が反映されます。
   </p>
-  <button id="load-finals-btn">決勝技を読み込む</button>
+  <button style="width:100%; padding:8px; font-size:14px;" id="load-finals-btn">決勝技を読み込む</button>
 
-  <div class="order-box" style="margin-top:8px;">
+  <div class="order-box" style="margin-top:10px;">
     <div class="order-box-title">
       決勝編成リスト（<span id="finals-count">0</span>技）
     </div>
@@ -258,7 +304,7 @@ button {
 
 <!-- ===== 予選編成モード ===== -->
 <div id="mode-prelims" class="mode-section">
-  <p style="font-size:12px;">
+  <p style="font-size:14px;">
     予選用の技を<strong>12個まで</strong>選び、<br>
     第1ラウンド（6個）／第2ラウンド（6個）に分けて並べ替えるモードです。<br>
     下の一覧から技を選択 → 「予選編成に反映」で自動的に<br>
@@ -269,7 +315,7 @@ button {
 
   <div id="pre-tech-list" class="pre-tech-list"></div>
 
-  <button id="apply-prelims-btn">選択した技を予選編成に反映</button>
+  <button style="width:100%; padding:8px; font-size:14px;" id="apply-prelims-btn">選択した技を予選編成に反映</button>
 
   <div class="order-box">
     <div class="order-box-title">
@@ -286,19 +332,11 @@ button {
   </div>
 </div>
 
-<!-- 固定バー（スコア共通表示） -->
-<div class="total-bar" id="total-bar">
-  <div class="total-box">
-    <div class="total-row"><span>技数：</span><span id="selected-count">0</span></div>
-    <div class="total-row"><span>FMD：</span><span id="fmd-total">0</span></div>
-    <div class="total-row"><span>基礎点：</span><span id="base-total">0</span></div>
-    <div class="total-row"><span>予選：</span><span id="pre-total">0</span></div>
-    <div class="total-main">
-      総合計：<span id="final-total">0</span>
-    </div>
-  </div>
-  <button onclick="resetAll()">リセット</button>
-  <button style="margin-top:4px; background:#555;" onclick="openPrintView()">選択技一覧を印刷</button>
+<!-- 画面下：モード切り替えバー -->
+<div class="mode-bar">
+  <button class="mode-btn active" data-mode="score">決勝スコア</button>
+  <button class="mode-btn" data-mode="finals">決勝編成</button>
+  <button class="mode-btn" data-mode="prelims">予選編成</button>
 </div>
 
 <script>
@@ -497,9 +535,9 @@ document.getElementById("load-finals-btn").addEventListener("click", () => {
     li.innerHTML = `
       <span class="order-name">[${pt}点] ${name}</span>
       <div class="order-controls">
-        <button class="order-btn" data-act="up">↑</button>
-        <button class="order-btn" data-act="down">↓</button>
-        <button class="order-btn" data-act="del">削除</button>
+        <button class="order-btn up-btn" data-act="up">↑</button>
+        <button class="order-btn down-btn" data-act="down">↓</button>
+        <button class="order-btn del-btn" data-act="del">×</button>
       </div>
     `;
     finalsList.appendChild(li);
@@ -560,10 +598,10 @@ function createPrelimsItem(pt, name, round) {
   li.innerHTML = `
     <span class="order-name">[${pt}点] ${name}</span>
     <div class="order-controls">
-      <button class="order-btn" data-act="up">↑</button>
-      <button class="order-btn" data-act="down">↓</button>
+      <button class="order-btn up-btn" data-act="up">↑</button>
+      <button class="order-btn down-btn" data-act="down">↓</button>
       <button class="order-btn" data-act="${moveAct}">${moveLabel}</button>
-      <button class="order-btn" data-act="del">削除</button>
+      <button class="order-btn del-btn" data-act="del">×</button>
     </div>
   `;
   return li;
@@ -602,7 +640,6 @@ prelimsList1.addEventListener("click", e => {
   } else if (act === "del") {
     li.remove();
   } else if (act === "to2") {
-    // 第2ラウンドへ移動
     const text = li.querySelector(".order-name").textContent;
     const match = text.match(/^\[(\d+)点\]\s*(.+)$/);
     let pt = "", name = text;
@@ -630,7 +667,6 @@ prelimsList2.addEventListener("click", e => {
   } else if (act === "del") {
     li.remove();
   } else if (act === "to1") {
-    // 第1ラウンドへ移動
     const text = li.querySelector(".order-name").textContent;
     const match = text.match(/^\[(\d+)点\]\s*(.+)$/);
     let pt = "", name = text;
@@ -662,12 +698,10 @@ function resetAll() {
 
 // ===== 印刷用画面 =====
 function openPrintView() {
-  // 決勝編成
   const finals = [];
   finalsList.querySelectorAll(".order-item .order-name").forEach(el => {
     finals.push(el.textContent);
   });
-  // 予選編成 第1R / 第2R
   const prelims1 = [];
   prelimsList1.querySelectorAll(".order-item .order-name").forEach(el => {
     prelims1.push(el.textContent);
@@ -678,7 +712,7 @@ function openPrintView() {
   });
 
   const w = window.open("", "_blank");
-  if (!w) return; // ポップアップブロックなど
+  if (!w) return;
   w.document.write(`
     <html>
     <head>
@@ -686,10 +720,10 @@ function openPrintView() {
       <title>ツバメカップ 選択技一覧</title>
       <style>
         body { font-family: sans-serif; padding: 20px; }
-        h1 { font-size: 20px; margin-bottom: 10px; }
-        h2 { font-size: 16px; margin-top: 20px; }
-        ol { padding-left: 20px; }
-        li { margin-bottom: 4px; font-size: 13px; }
+        h1 { font-size: 22px; margin-bottom: 10px; }
+        h2 { font-size: 18px; margin-top: 20px; }
+        ol { padding-left: 22px; }
+        li { margin-bottom: 4px; font-size: 14px; }
       </style>
     </head>
     <body>

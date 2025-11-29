@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ツバメカップ2025 技チェック＆編成</title>
+
+<style>
+body {
+  font-family: sans-serif;
+  padding: 12px;
+  background: #f6faff;
+  padding-bottom: 140px;
+  box-sizing: border-box;
+}
+
+/* タイトル */
+h1 {
+  font-size: 18px;
+  margin-bottom: 6px;
+}
+
+/* モード切り替えボタン */
+.mode-bar {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+.mode-btn {
+  flex: 1;
+  min-width: 90px;
+  padding: 6px 4px;
+  font-size: 12px;
+  border-radius: 6px;
+  border: 1px solid #0a84ff;
+  background: white;
+  color: #0a84ff;
+}
+.mode-btn.active {
+  background: #0a84ff;
+  color: white;
+}
+
+/* セクションタイトル */
+.section-title {
+  margin-top: 18px;
+  font-weight: bold;
+  font-size: 16px;
+  border-left: 5px solid #0a84ff;
+  padding-left: 6px;
+}
+
+/* 技リストアイテム */
+.tech-item {
+  background: white;
+  margin: 4px 0;
+  padding: 8px;
+  border-radius: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 6px;
+}
+.tech-name {
+  display: flex;
+  flex-direction: column;
+}
+.tech-title {
+  font-size: 13px;
+}
+.tech-pt-label {
+  font-size: 10px;
+  color: #666;
+}
+
+/* チェック欄 */
+.tech-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 110px;
+  justify-content: flex-end;
+}
+.multilabel,
+.maincheck-label {
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+/* 予選点枠 */
+.pre-box {
+  margin-top: 15px;
+  background: #e6f4ff;
+  padding: 8px;
+  border-radius: 6px;
+  font-size: 13px;
+}
+.pre-input {
+  width: 70px;
+  padding: 3px;
+  font-size: 14px;
+}
+
+/* 下部固定バー（コンパクト） */
+.total-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 6px 8px;
+  background: rgba(240, 240, 240, 0.95);
+  box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.2);
+  box-sizing: border-box;
+  z-index: 200;
+  transition: background 0.3s ease;
+}
+
+/* 合計ボックス（小さく） */
+.total-box {
+  background: #fff7d1;
+  padding: 6px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  line-height: 1.2;
+}
+.total-main {
+  font-size: 15px;
+  font-weight: bold;
+  margin-top: 4px;
+}
+.total-row {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1px;
+  gap: 6px;
+}
+
+/* 小型ボタン */
+button {
+  margin-top: 6px;
+  width: 100%;
+  padding: 8px;
+  border: none;
+  background: #0a84ff;
+  color: white;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+/* 警告 */
+.warning {
+  color: red;
+  font-weight: bold;
+  display: none;
+  font-size: 12px;
+  margin-bottom: 5px;
+}
+
+/* モード別コンテナ */
+.mode-section {
+  display: none;
+}
+.mode-section.active {
+  display: block;
+}
+
+/* 編成リスト */
+.order-box {
+  margin-top: 10px;
+  background: #ffffff;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+}
+.order-box-title {
+  font-size: 12px;
+  margin-bottom: 4px;
+}
+.order-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.order-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 4px 4px;
+  border-bottom: 1px solid #eee;
+  font-size: 12px;
+}
+.order-name {
+  flex: 1;
+}
+.order-controls {
+  display: flex;
+  gap: 4px;
+}
+.order-btn {
+  font-size: 10px;
+  padding: 2px 4px;
+  border-radius: 4px;
+  border: 1px solid #999;
+  background: #f5f5f5;
+}
+
+/* 予選用技選択リスト */
+.pre-tech-list .tech-item {
+  padding: 6px;
+}
+.pre-tech-list .maincheck-label {
+  font-size: 11px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>ツバメカップ2025 技チェック＆編成</h1>
+<p style="font-size:12px;">30技までの決勝スコア計算／決勝・予選の編成モード／印刷用一覧に対応。</p>
+
+<div class="mode-bar">
+  <button class="mode-btn active" data-mode="score">決勝スコアモード</button>
+  <button class="mode-btn" data-mode="finals">決勝編成モード</button>
+  <button class="mode-btn" data-mode="prelims">予選編成モード</button>
+</div>
+
+<p class="warning" id="warn">⚠ 技は30個までしか選べません</p>
+
+<!-- ===== 決勝スコアモード ===== -->
+<div id="mode-score" class="mode-section active">
+  <div id="tech-list"></div>
+
+  <div class="pre-box">
+    予選点（0〜112）： 
+    <input type="number" id="pre-score" class="pre-input" value="0" min="0" max="112" /> 点
+    <p class="warning" id="pre-warn">⚠ 予選点は0〜112の範囲で入力してください。</p>
+  </div>
+</div>
+
+<!-- ===== 決勝編成モード ===== -->
+<div id="mode-finals" class="mode-section">
+  <p style="font-size:12px;">
+    決勝スコアモードで「使用」にチェックした最大30技を元に、順番を並べ替えるモードです。<br>
+    「決勝技を読み込む」を押すと現在の選択が反映されます。
+  </p>
+  <button id="load-finals-btn">決勝技を読み込む</button>
+
+  <div class="order-box" style="margin-top:8px;">
+    <div class="order-box-title">
+      決勝編成リスト（<span id="finals-count">0</span>技）
+    </div>
+    <ul id="finals-list" class="order-list"></ul>
+  </div>
+</div>
+
+<!-- ===== 予選編成モード ===== -->
+<div id="mode-prelims" class="mode-section">
+  <p style="font-size:12px;">
+    予選用の技を<strong>12個まで</strong>選び、<br>
+    第1ラウンド（6個）／第2ラウンド（6個）に分けて並べ替えるモードです。<br>
+    下の一覧から技を選択 → 「予選編成に反映」で自動的に<br>
+    第1ラウンド → 第2ラウンド の順に振り分けます。
+  </p>
+
+  <div class="warning" id="prelimit-warn">⚠ 予選で選べる技は12個までです。</div>
+
+  <div id="pre-tech-list" class="pre-tech-list"></div>
+
+  <button id="apply-prelims-btn">選択した技を予選編成に反映</button>
+
+  <div class="order-box">
+    <div class="order-box-title">
+      予選編成 第1ラウンド（<span id="prelims1-count">0</span>技）
+    </div>
+    <ul id="prelims1-list" class="order-list"></ul>
+  </div>
+
+  <div class="order-box">
+    <div class="order-box-title">
+      予選編成 第2ラウンド（<span id="prelims2-count">0</span>技）
+    </div>
+    <ul id="prelims2-list" class="order-list"></ul>
+  </div>
+</div>
+
+<!-- 固定バー（スコア共通表示） -->
+<div class="total-bar" id="total-bar">
+  <div class="total-box">
+    <div class="total-row"><span>技数：</span><span id="selected-count">0</span></div>
+    <div class="total-row"><span>FMD：</span><span id="fmd-total">0</span></div>
+    <div class="total-row"><span>基礎点：</span><span id="base-total">0</span></div>
+    <div class="total-row"><span>予選：</span><span id="pre-total">0</span></div>
+    <div class="total-main">
+      総合計：<span id="final-total">0</span>
+    </div>
+  </div>
+  <button onclick="resetAll()">リセット</button>
+  <button style="margin-top:4px; background:#555;" onclick="openPrintView()">選択技一覧を印刷</button>
+</div>
+
+<script>
+// --- 技データ ---
+const tricks = {
+  1: ["紐かけ手乗せ","お手玉","どじょうすくい","メリーゴーランド","初詣","手乗せジャンプ","脚下から回す","線香花火","ブーメランキャッチ","ベルト"],
+  2: ["つばめ返し","ひばり返し","リフティング","つなわたり","紐のせ","日本一周","ツイスト片道","お手玉足抜き","カメレオン","フック"],
+  3: ["トンネルつなわたり","腰かけ","手からメリーゴーランド（3周）","ツイスト往復","トランポリン（3回）","おちょこ","タケコプター","二段ゴマ","サンズ（1回）","燈籠","クロスキャッチ"],
+  4: ["指のせ","大車輪","かざぐるま","竜巻","へび（3周）","牛若丸片道","渦潮（上下2回）","メダル","舞妓かけ","コメタ","ムチ1回","胴回し","脚くぐし（1回）"],
+  5: ["砂時計","はやぶさ返し","鯉の滝登り","両手へび","足かけ","空中大車輪","足乗せ","縦へび3周","シングルクロック","チョップスティック","リキャプチャー型グリーントライアングル","ゼロスタ","クロスキャッチフォール","ダイレクト綱渡り"],
+  6: ["地獄車3周","白刃取り","燕尾返し","オープンウィップ1回","背くぐし1回","トルネード1回","リフティング〜直大車輪","ピルエット（ひものせ〜ひものせ）","ザリガニ釣り","片白刃","登り龍（5周）"],
+  7: ["鎖鎌","夜叉車","首切り〜腰切り〜脚切り","忍者","脚くぐし in out","かまいたち3セット in 両手へび","レール","むち3","ゼロスタウィップ","リリーススタート","ストリングトルネード","オロチ"],
+  8: ["同時2個空中手のせ","くるりんぱ（3回）","背面ムチ","かまいたち3セット〜太陽系1周","縦へび4周〜灯籠","歯車","二回転白刃取り","砂時計〜裏燈籠","Vレール（2回）","背面チョップスティック","侍ウィップ","侍キャッチ","ダイレクトむち3","へび2往復","脚下オープンウィップ","ニシキヘビ","背面燈籠"],
+  9: ["リュウグウノツカイ","ウロボロス","スラックライン","背面オープンウィップ","背面両手へび","サイドワインダー2.0","両面ちょんかけ","夜刀神","クエンティン・ウィップ","渦潮〜燈籠","4DEX","フットクラッチ","フットトス蛇","ダブルピルエット白刃取り","アームグラインドウィップ","背面ダイレクトむち3"],
+  10: ["ダイレク燈籠","2個うずしお3回","てじなーにゃむち","ヤトボロス"]
+};
+
+// ===== 決勝スコアモード用の技リスト生成 =====
+const scoreListWrap = document.getElementById("tech-list");
+Object.keys(tricks).forEach(pt => {
+  const section = document.createElement("div");
+  section.innerHTML = `<div class='section-title'>${pt}点技</div>`;
+  tricks[pt].forEach(name => {
+    const item = document.createElement("div");
+    item.className = "tech-item";
+    item.innerHTML = `
+      <div class="tech-name">
+        <span class="tech-title">${name}</span>
+        <span class="tech-pt-label">${pt}点技</span>
+      </div>
+      <div class="tech-controls">
+        <label class="multilabel">
+          <input type="checkbox" class="multi" /> 1.5倍
+        </label>
+        <label class="maincheck-label">
+          <input type="checkbox" class="chk" data-pt="${pt}" data-name="${name}" /> 使用
+        </label>
+      </div>
+    `;
+    section.appendChild(item);
+  });
+  scoreListWrap.appendChild(section);
+});
+
+// ===== 予選用技選択リスト生成（別枠） =====
+const preTechWrap = document.getElementById("pre-tech-list");
+Object.keys(tricks).forEach(pt => {
+  const section = document.createElement("div");
+  section.innerHTML = `<div class='section-title'>${pt}点技</div>`;
+  tricks[pt].forEach(name => {
+    const item = document.createElement("div");
+    item.className = "tech-item";
+    item.innerHTML = `
+      <div class="tech-name">
+        <span class="tech-title">${name}</span>
+        <span class="tech-pt-label">${pt}点技</span>
+      </div>
+      <div class="tech-controls">
+        <label class="maincheck-label">
+          <input type="checkbox" class="pre-chk" data-pt="${pt}" data-name="${name}" /> 予選で使用
+        </label>
+      </div>
+    `;
+    section.appendChild(item);
+  });
+  preTechWrap.appendChild(section);
+});
+
+// ===== スコア計算関連 =====
+const warn = document.getElementById("warn");
+const preWarn = document.getElementById("pre-warn");
+const preInput = document.getElementById("pre-score");
+const selectedSpan = document.getElementById("selected-count");
+const fmdSpan = document.getElementById("fmd-total");
+const baseSpan = document.getElementById("base-total");
+const preSpan = document.getElementById("pre-total");
+const finalSpan = document.getElementById("final-total");
+const totalBar = document.getElementById("total-bar");
+
+function formatScore(value) {
+  return Number.isInteger(value) ? value : value.toFixed(1);
+}
+
+function getPreScore() {
+  let v = parseFloat(preInput.value);
+  if (isNaN(v)) v = 0;
+  let clamped = Math.min(Math.max(0, v), 112);
+  if (clamped !== v) {
+    preInput.value = clamped;
+    preWarn.style.display = "block";
+  } else preWarn.style.display = "none";
+  return clamped;
+}
+
+function calcTotal() {
+  const items = document.querySelectorAll("#mode-score .tech-item");
+  let selectedCount = 0;
+  let fmdTotal = 0;
+  let baseTotal = 0;
+
+  items.forEach(item => {
+    const chk = item.querySelector(".chk");
+    const multi = item.querySelector(".multi");
+    if (chk.checked) {
+      selectedCount++;
+      const basePt = Number(chk.dataset.pt);
+      let fmd = basePt * basePt;
+      if (multi.checked) fmd *= 1.5;
+      fmdTotal += fmd;
+      baseTotal += basePt;
+    }
+  });
+
+  if (selectedCount > 30) warn.style.display = "block";
+  else warn.style.display = "none";
+
+  const preScore = getPreScore();
+  const finalBase = fmdTotal + baseTotal;
+  const totalWithPre = finalBase + preScore;
+
+  selectedSpan.textContent = selectedCount;
+  fmdSpan.textContent = formatScore(fmdTotal);
+  baseSpan.textContent = formatScore(baseTotal);
+  preSpan.textContent = formatScore(preScore);
+  finalSpan.textContent = formatScore(totalWithPre);
+
+  // 合計点に応じてバーの色変更
+  if (totalWithPre >= 2000) totalBar.style.background = "black";
+  else if (totalWithPre >= 1900) totalBar.style.background = "red";
+  else if (totalWithPre >= 1800) totalBar.style.background = "purple";
+  else if (totalWithPre >= 1700) totalBar.style.background = "orange";
+  else if (totalWithPre >= 1600) totalBar.style.background = "dodgerblue";
+  else if (totalWithPre >= 1500) totalBar.style.background = "lightgreen";
+  else totalBar.style.background = "rgba(240,240,240,0.95)";
+}
+
+// 使用チェックの制限（30個）
+document.querySelectorAll(".chk").forEach(chk => {
+  chk.addEventListener("change", e => {
+    const checks = document.querySelectorAll(".chk:checked");
+    if (checks.length > 30 && e.target.checked) {
+      chk.checked = false;
+      warn.textContent = "⚠ 技は30個までしか選べません";
+      warn.style.display = "block";
+    }
+    calcTotal();
+  });
+});
+
+// 1.5倍チェック
+document.querySelectorAll(".multi").forEach(m =>
+  m.addEventListener("change", calcTotal)
+);
+
+// 予選点入力
+preInput.addEventListener("input", calcTotal);
+
+// 初期計算
+calcTotal();
+
+// ===== モード切り替え =====
+const modeButtons = document.querySelectorAll(".mode-btn");
+const modeSections = {
+  score: document.getElementById("mode-score"),
+  finals: document.getElementById("mode-finals"),
+  prelims: document.getElementById("mode-prelims")
+};
+
+modeButtons.forEach(btn => {
+  btn.addEventListener("click", () => {
+    const mode = btn.dataset.mode;
+    modeButtons.forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    Object.keys(modeSections).forEach(key => {
+      modeSections[key].classList.toggle("active", key === mode);
+    });
+  });
+});
+
+// ===== 決勝編成モード =====
+const finalsList = document.getElementById("finals-list");
+const finalsCountSpan = document.getElementById("finals-count");
+
+function rebuildFinalsList() {
+  finalsCountSpan.textContent = finalsList.querySelectorAll(".order-item").length;
+}
+
+document.getElementById("load-finals-btn").addEventListener("click", () => {
+  finalsList.innerHTML = "";
+  const checks = document.querySelectorAll(".chk:checked");
+  checks.forEach(chk => {
+    const name = chk.dataset.name;
+    const pt = chk.dataset.pt;
+    const li = document.createElement("li");
+    li.className = "order-item";
+    li.innerHTML = `
+      <span class="order-name">[${pt}点] ${name}</span>
+      <div class="order-controls">
+        <button class="order-btn" data-act="up">↑</button>
+        <button class="order-btn" data-act="down">↓</button>
+        <button class="order-btn" data-act="del">削除</button>
+      </div>
+    `;
+    finalsList.appendChild(li);
+  });
+  rebuildFinalsList();
+});
+
+// 決勝編成の並べ替え処理
+finalsList.addEventListener("click", e => {
+  if (!e.target.classList.contains("order-btn")) return;
+  const act = e.target.dataset.act;
+  const li = e.target.closest(".order-item");
+  if (!li) return;
+  if (act === "up" && li.previousElementSibling) {
+    li.parentNode.insertBefore(li, li.previousElementSibling);
+  } else if (act === "down" && li.nextElementSibling) {
+    li.parentNode.insertBefore(li.nextElementSibling, li);
+  } else if (act === "del") {
+    li.remove();
+  }
+  rebuildFinalsList();
+});
+
+// ===== 予選編成モード =====
+const preLimitWarn = document.getElementById("prelimit-warn");
+const preChecks = document.querySelectorAll(".pre-chk");
+const applyPrelimsBtn = document.getElementById("apply-prelims-btn");
+const prelimsList1 = document.getElementById("prelims1-list");
+const prelimsList2 = document.getElementById("prelims2-list");
+const prelims1CountSpan = document.getElementById("prelims1-count");
+const prelims2CountSpan = document.getElementById("prelims2-count");
+
+// 予選チェック制限（12個）
+preChecks.forEach(chk => {
+  chk.addEventListener("change", e => {
+    const checked = document.querySelectorAll(".pre-chk:checked");
+    if (checked.length > 12 && e.target.checked) {
+      chk.checked = false;
+      preLimitWarn.style.display = "block";
+    } else if (checked.length <= 12) {
+      preLimitWarn.style.display = "none";
+    }
+  });
+});
+
+// 予選編成のカウント更新
+function rebuildPrelimsCounts() {
+  prelims1CountSpan.textContent = prelimsList1.querySelectorAll(".order-item").length;
+  prelims2CountSpan.textContent = prelimsList2.querySelectorAll(".order-item").length;
+}
+
+// 予選編成リスト用のLI作成
+function createPrelimsItem(pt, name, round) {
+  const li = document.createElement("li");
+  li.className = "order-item";
+  const moveLabel = round === 1 ? "→2R" : "→1R";
+  const moveAct = round === 1 ? "to2" : "to1";
+  li.innerHTML = `
+    <span class="order-name">[${pt}点] ${name}</span>
+    <div class="order-controls">
+      <button class="order-btn" data-act="up">↑</button>
+      <button class="order-btn" data-act="down">↓</button>
+      <button class="order-btn" data-act="${moveAct}">${moveLabel}</button>
+      <button class="order-btn" data-act="del">削除</button>
+    </div>
+  `;
+  return li;
+}
+
+// 選択した技を予選編成（第1R→第2R）に反映
+applyPrelimsBtn.addEventListener("click", () => {
+  prelimsList1.innerHTML = "";
+  prelimsList2.innerHTML = "";
+
+  const checked = document.querySelectorAll(".pre-chk:checked");
+  checked.forEach((chk, index) => {
+    const name = chk.dataset.name;
+    const pt = chk.dataset.pt;
+    if (index < 6) {
+      prelimsList1.appendChild(createPrelimsItem(pt, name, 1));
+    } else if (index < 12) {
+      prelimsList2.appendChild(createPrelimsItem(pt, name, 2));
+    }
+  });
+
+  rebuildPrelimsCounts();
+});
+
+// 予選 第1ラウンド 並べ替え＆ラウンド移動
+prelimsList1.addEventListener("click", e => {
+  if (!e.target.classList.contains("order-btn")) return;
+  const act = e.target.dataset.act;
+  const li = e.target.closest(".order-item");
+  if (!li) return;
+
+  if (act === "up" && li.previousElementSibling) {
+    li.parentNode.insertBefore(li, li.previousElementSibling);
+  } else if (act === "down" && li.nextElementSibling) {
+    li.parentNode.insertBefore(li.nextElementSibling, li);
+  } else if (act === "del") {
+    li.remove();
+  } else if (act === "to2") {
+    // 第2ラウンドへ移動
+    const text = li.querySelector(".order-name").textContent;
+    const match = text.match(/^\[(\d+)点\]\s*(.+)$/);
+    let pt = "", name = text;
+    if (match) {
+      pt = match[1];
+      name = match[2];
+    }
+    li.remove();
+    prelimsList2.appendChild(createPrelimsItem(pt, name, 2));
+  }
+  rebuildPrelimsCounts();
+});
+
+// 予選 第2ラウンド 並べ替え＆ラウンド移動
+prelimsList2.addEventListener("click", e => {
+  if (!e.target.classList.contains("order-btn")) return;
+  const act = e.target.dataset.act;
+  const li = e.target.closest(".order-item");
+  if (!li) return;
+
+  if (act === "up" && li.previousElementSibling) {
+    li.parentNode.insertBefore(li, li.previousElementSibling);
+  } else if (act === "down" && li.nextElementSibling) {
+    li.parentNode.insertBefore(li.nextElementSibling, li);
+  } else if (act === "del") {
+    li.remove();
+  } else if (act === "to1") {
+    // 第1ラウンドへ移動
+    const text = li.querySelector(".order-name").textContent;
+    const match = text.match(/^\[(\d+)点\]\s*(.+)$/);
+    let pt = "", name = text;
+    if (match) {
+      pt = match[1];
+      name = match[2];
+    }
+    li.remove();
+    prelimsList1.appendChild(createPrelimsItem(pt, name, 1));
+  }
+  rebuildPrelimsCounts();
+});
+
+// ===== リセット =====
+function resetAll() {
+  document.querySelectorAll(".chk").forEach(c => (c.checked = false));
+  document.querySelectorAll(".multi").forEach(c => (c.checked = false));
+  document.querySelectorAll(".pre-chk").forEach(c => (c.checked = false));
+  preInput.value = 0;
+  preWarn.style.display = "none";
+  preLimitWarn.style.display = "none";
+  finalsList.innerHTML = "";
+  prelimsList1.innerHTML = "";
+  prelimsList2.innerHTML = "";
+  finalsCountSpan.textContent = "0";
+  rebuildPrelimsCounts();
+  calcTotal();
+}
+
+// ===== 印刷用画面 =====
+function openPrintView() {
+  // 決勝編成
+  const finals = [];
+  finalsList.querySelectorAll(".order-item .order-name").forEach(el => {
+    finals.push(el.textContent);
+  });
+  // 予選編成 第1R / 第2R
+  const prelims1 = [];
+  prelimsList1.querySelectorAll(".order-item .order-name").forEach(el => {
+    prelims1.push(el.textContent);
+  });
+  const prelims2 = [];
+  prelimsList2.querySelectorAll(".order-item .order-name").forEach(el => {
+    prelims2.push(el.textContent);
+  });
+
+  const w = window.open("", "_blank");
+  if (!w) return; // ポップアップブロックなど
+  w.document.write(`
+    <html>
+    <head>
+      <meta charset="UTF-8" />
+      <title>ツバメカップ 選択技一覧</title>
+      <style>
+        body { font-family: sans-serif; padding: 20px; }
+        h1 { font-size: 20px; margin-bottom: 10px; }
+        h2 { font-size: 16px; margin-top: 20px; }
+        ol { padding-left: 20px; }
+        li { margin-bottom: 4px; font-size: 13px; }
+      </style>
+    </head>
+    <body>
+      <h1>ツバメカップ 選択技一覧</h1>
+
+      <h2>【決勝編成】</h2>
+      ${finals.length === 0 ? "<p>（決勝編成は未設定）</p>" : "<ol>" + finals.map(t => "<li>" + t + "</li>").join("") + "</ol>"}
+
+      <h2>【予選編成 第1ラウンド】</h2>
+      ${prelims1.length === 0 ? "<p>（第1ラウンドは未設定）</p>" : "<ol>" + prelims1.map(t => "<li>" + t + "</li>").join("") + "</ol>"}
+
+      <h2>【予選編成 第2ラウンド】</h2>
+      ${prelims2.length === 0 ? "<p>（第2ラウンドは未設定）</p>" : "<ol>" + prelims2.map(t => "<li>" + t + "</li>").join("") + "</ol>"}
+    </body>
+    </html>
+  `);
+  w.document.close();
+  w.focus();
+  w.print();
+}
+</script>
+
+</body>
+</html>
